@@ -1,0 +1,15 @@
+# ide/code-editor
+**/__pycache__/*
+__pycache__/*
+.vscode/*
+.idea/
+
+# virtual environment
+.venv/
+env/
+venv*/
+
+# db
+demo.db
+
+Backend Coding Assessment - SFEP.docx

@@ -1,0 +1,98 @@
+{% extends "layout.html" %} {% block content %}
+<div class="content-section">
+  <!-- On submit, sends a POST request back to current endpoint (mood endpoint) -->
+  <form method="POST" action="">
+    {{form.hidden_tag()}}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">Submit Mood</legend>
+      <label
+        >How are you feeling today on a scale from 1 (Poor) to 10
+        (Excellent)?</label
+      >
+      <div class="form-group">
+        {{form.mood_value.label(class="form-control-label")}} {% if
+        form.mood_value.errors %} {{form.mood_value(class = "form-control
+        form-control-lg is-invalid")}}
+        <div class="invalid-feedback">
+          {% for error in form.mood_value.errors %}
+          <span>{{error}}</span>
+          {% endfor %}
+        </div>
+        {% else %} {{form.mood_value(class = "form-control form-control-lg")}}
+        {% endif %}
+      </div>
+    </fieldset>
+    <div class="form-group">
+      {{form.submit(class="btn btn-outline-info")}}
+    </div>
+  </form>
+</div>
+{% if moods|length == 0 %}
+<h4 class="centerText">You have no submitted moods</h4>
+{% else %}
+<h2 class="centerText">Your Moods</h2>
+{% if streak != 0 %}
+<h4>You're on a {{streak}}-day streak</h4>
+{% else %}
+<h4>Your streak has ended, submit a mood to begin another</h4>
+{% endif %}
+<small
+  >Your streak is how many consecutive days you've submitted a mood.
+</small>
+<small
+  >If you miss submitting a mood the day after your latest mood posting, your
+  streak will end.</small
+>
+<!-- List out moods submitted  -->
+{% for mood in moods %}
+<article class="media content-section">
+  <div class="media-body">
+    <small class="text-muted"
+      >{{ mood.date_posted.strftime('%Y-%m-%d') }}</small
+    >
+    <h3 class="article-title">
+      Mood Value: {{mood.mood_value}}
+    </h3>
+  </div>
+  <button
+    type="button"
+    class="btn btn-danger btn-sm m-3"
+    data-toggle="modal"
+    data-target="#deleteModal{{mood.id}}"
+  >
+    Delete
+  </button>
+</article>
+
+<!-- Modal for deleting mood -->
+<div class="modal fade" id="deleteModal{{mood.id}}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="{{mood.id}}">
+          Delete this mood?
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Cancel
+        </button>
+        <form
+          action="{{url_for('delete_mood', mood_id=mood.id)}}"
+          method="POST"
+        >
+          <input type="submit" class="btn btn-danger" value="Delete" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %} {% endif %} {% endblock %}
